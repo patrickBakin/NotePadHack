@@ -1,8 +1,8 @@
 // Hack NotePad.exe
 
 /*
-*  For some reason i couldn't manage to make it write more than 39 letters per line
-*  By. Potato Pie
+*  
+*  By. Potato Pie (SK)
 * 
 * 
 * 
@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <stdlib.h>
 #include "opencv2\opencv.hpp"
 #include "opencv2\highgui.hpp"
 typedef unsigned long long uint64_t;
@@ -79,7 +80,7 @@ uint64_t __stdcall mainProg(HMODULE h_module)
     freopen_s(&file, "CONOUT$", "w", stdout);
 
 
-    std::string filename = "C:\\Users\\User\\source\\repos\\NotePadHack\\NotePadHack\\BlackNWhite.mp4";
+    std::string filename = "C:\\Users\\User\\source\\repos\\NotePadHack\\NotePadHack\\Psyc.mp4";
     VideoCapture capture(filename);
     Mat frame;
     Mat gray_image;
@@ -95,12 +96,12 @@ uint64_t __stdcall mainProg(HMODULE h_module)
             
             //std::cout << frame.cols << " " << frame.rows << std::endl;
             
-            resize(frame, gray_image, cv::Size(512,512), 0, 0, INTER_LINEAR);
+            resize(frame, gray_image, cv::Size(1024,1024), 0, 0, INTER_LINEAR);
             cvtColor(gray_image, gray_image, COLOR_BGR2GRAY);
             imshow("gray",gray_image);
-            const char* ASCII = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\" ^ `'. ";
+            const char* ASCII = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
             int shades = 255 / strlen(ASCII);
-            auto charArray = new char[512][512];
+            auto charArray = new char[1024*1024];
             
             std::cout << gray_image.rows << gray_image.cols << std::endl;
             for (int i = 0; i < gray_image.rows; i++)
@@ -115,7 +116,7 @@ uint64_t __stdcall mainProg(HMODULE h_module)
 
 
 
-                       charArray[i][j] = c;
+                       charArray[i*gray_image.rows+j] = c;
                     
                     
                     
@@ -133,19 +134,39 @@ uint64_t __stdcall mainProg(HMODULE h_module)
             }
          
             
-            //int nChars = MultiByteToWideChar(CP_ACP, 0, charArray, -1, NULL, 0);
+               //int nChars = MultiByteToWideChar(CP_ACP, 0, charArray, -1, NULL, 0);
 
                //const wchar_t* lpReplace = new WCHAR[nChars];
-               //MultiByteToWideChar(CP_ACP, 0, charArray,-1, (LPWSTR)lpReplace, nChars);
+               // MultiByteToWideChar(CP_ACP, 0, charArray,-1, (LPWSTR)lpReplace, nChars);
              
                  
-                int i = 0;
-                std::string Str(&charArray[0][0],&charArray[511][511]);
+                //int i = 0;
+
+                
+                std::string Str(&charArray[0],&charArray[1024*1024-1]);
                 std::wstring widestr =  std::wstring(Str.begin(), Str.end());
                 const wchar_t* lpReplace = widestr.c_str();
                 
-                memcpy(Text->Ptr->Data, lpReplace, wcslen(lpReplace)+1);
-               /* while (*(lpReplace + i))
+               // const size_t size = strlen(charArray) + 1;
+                //wchar_t* lpReplace = new wchar_t[size];
+                //mbstowcs_s(&lpReplace[0], &charArray[0], size);
+                //size_t SizeAfterConverted;
+                //std::mbstowcs(&lpReplace[0], &charArray[0], size);
+                
+               
+                //mbstowcs_s(&SizeAfterConverted,lpReplace, 0,charArray, size-1);
+               
+                
+               
+                //const char* ccp = reinterpret_cast<const char*>(charArray);
+                //size_t len = std::mbstowcs(nullptr, &ccp[0], 0);
+                //mbstowcs_s(&SizeAfterConverted, &lpReplace[0], size, &charArray[0], size);
+                //std::cout << SizeAfterConverted << std::endl;
+                std::cout << widestr.size()  << std::endl;
+                memcpy(Text->Ptr->Data, lpReplace,widestr.size()*sizeof(wchar_t));
+                //delete[] lpReplace;
+                //strcpy(Text->Ptr->Data, lpReplace);
+                /* while (*(lpReplace + i))
                 {
 
                    // std::cout << "2222222222" << std::endl;
@@ -158,7 +179,7 @@ uint64_t __stdcall mainProg(HMODULE h_module)
                 //delete[] lpReplace;
                 delete[] charArray;
                 charArray = nullptr;
-                waitKey(1000);
+                waitKey(5);
         }
         
         /*for (int j = 0; j <= 100; j++)
